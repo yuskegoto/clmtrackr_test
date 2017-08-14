@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>facetracking</title>
+		<title>Track the Hipster</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 		<meta charset="utf-8">
 		<style>
@@ -122,10 +122,9 @@
 				if (event.detection == "CS") {
 					overlayContext.translate(event.x, event.y)
 					overlayContext.rotate(event.angle-(Math.PI/2));
-					overlayContext.strokeStyle = "#00CC0055";
-					overlayContext.strokeRect((-(event.width/2)) >> 0, (-(event.height/2)) >> 0, event.width, event.height);
+//					overlayContext.strokeStyle = "#00CC00";
+//					overlayContext.strokeRect((-(event.width/2)) >> 0, (-(event.height/2)) >> 0, event.width, event.height);
                     overlayContext.drawImage(imageObj, -imageObj.width/4, (-imageObj.height/4) -10, imageObj.width/2, imageObj.height/2);
-//                    overlayContext.drawImage(img.event.x, event.y);
 					overlayContext.rotate((Math.PI/2)-event.angle);
 					overlayContext.translate(-event.x, -event.y);
 				}
