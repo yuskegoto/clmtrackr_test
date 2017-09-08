@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>Face mask</title>
+		<title>Face replacer</title>
 		<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 
 			body {
@@ -17,18 +18,30 @@
 				left: 0px;
                 right: 0px;
                 bottom: 0px;
+                margin: auto;
+/*                min-width: 50%;*/
+                min-height: 60%;
+/*                fipping the camera pictre here*/
 				-o-transform : scaleX(-1);
 				-webkit-transform : scaleX(-1);
+				-moz-transform : scaleX(-1);
 				transform : scaleX(-1);
 				-ms-filter : fliph; /*IE*/
 				filter : fliph; /*IE*/
 
-/*                min-width: 100%;*/
-                min-height: 100%;
-                margin: auto;
+                
+
 			}
 
 			#videoel {
+                position:absolute;
+                top:0;
+                left:0;
+                right:0;
+                bottom:0;
+                margin:auto;
+                min-width:100%;
+                min-height: 60%;
 /*
                 position: absolute;
                 top: 0 px;
@@ -37,22 +50,51 @@
 				-o-transform : scaleX(-1);
 				-webkit-transform : scaleX(-1);
 				transform : scaleX(-1);
-				-ms-filter : fliph; /*IE*/
-				filter : fliph; /*IE*/
+				-moz-transform : scaleX(-1);
+/*                for testing*/
+/*
+				-o-transform : scaleY(-1);
+				-webkit-transform : scaleY(-1);
+				transform : scaleY(-1);
+				-moz-transform : scaleY(-1);
+*/
+                
+/*
+                -moz-transform: rotate(90deg);
+                -webkit-transform: rotate(90deg);
+                transform: rotate(90deg);
+*/
+/*				-ms-filter : fliph; IE*/
+/*				filter : fliph; IE*/
 /*                height: 100 vh;*/
+/*
+                width: 100%;
+                height: 100%;
                 min-width: 100%;
                 min-height: 100%;
+*/
+
 			}
 
 			#container {
-                position : relative;
+/*                position : relative;*/
+                position : fixed;
 /*				width : 370px;*/
-				position : absolute;
+/*				position : absolute;*/
+/*
                 top: 0px;
                 left: 0px;
+*/
+                top: -50%;
+                left: -50%;
+                width:200%;
+                height:200%;
+                z-index: -100;
+/*
                 min-width: 100%;
                 min-height: 100%;
-                height: 100vh;
+*/
+/*                height: 100vh;*/
 
 			}
 
@@ -115,7 +157,7 @@
 		<script src="./js/js/libs/webgl-utils.js"></script>
 		<script src="./js/build/clmtrackr.js"></script>
 		<script src="./models/model_pca_20_svm.js"></script>
-		<script src="./js/js/libs/Stats.js"></script>
+<!--		<script src="./js/js/libs/Stats.js"></script>-->
 		<script src="./js/js/face_deformer.js"></script>
 		<div id="content">
 			<div id="container">
@@ -132,6 +174,35 @@
 				<canvas id="webgl" width="400" height="300"></canvas>
 
 			</div>
+            
+            <script>
+                var vidHeight = 300;
+                var vidWidth = 400;
+                var vid = document.getElementById('videoel');
+				var overlay = document.getElementById('overlay');
+                var webglCanvas = document.getElementById('webgl');
+                
+                if(screen.orientation.type.startsWith('landscape')){
+                    vid.setAttribute('width', vidWidth);
+                    vid.setAttribute('height', vidHeight);
+                    overlay.setAttribute('width', vidWidth);
+                    overlay.setAttribute('height', vidHeight);
+                    webglCanvas.setAttribute('width', vidWidth);
+                    webglCanvas.setAttribute('height', vidHeight);
+                    screenMode = screen.orientation.type;
+                    console.log("Set video to landscape");
+                }
+                else{
+                    vid.setAttribute('width', vidHeight);
+                    vid.setAttribute('height', vidWidth);
+                    overlay.setAttribute('width', vidHeight);
+                    overlay.setAttribute('height', vidWidth);
+                    webglCanvas.setAttribute('width', vidHeight);
+                    webglCanvas.setAttribute('height', vidWidth); 
+                    screenMode = screen.orientation.type;
+                    console.log("Set video to portrait");
+                }
+            </script>
 <!--			<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>-->
 <!--			<select id="selecter" name="mask" id="selectmask">-->
 <!--
@@ -189,16 +260,45 @@
             <script>
 				var vid = document.getElementById('videoel');
 				var overlay = document.getElementById('overlay');
+                var webglCanvas = document.getElementById('webgl');
 				var overlayCC = overlay.getContext('2d');
+                var vidWidth = 400;
+                var vidHeight = 300;
+                var screenMode = screen.orientation.type;
 
 				var ctrack = new clm.tracker();
 				ctrack.init(pModel);
 
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				document.getElementById('container').appendChild( stats.domElement );
+//				stats = new Stats();
+//				stats.domElement.style.position = 'absolute';
+//				stats.domElement.style.top = '0px';
+//				document.getElementById('container').appendChild( stats.domElement );
 
+                function detectRotation(){
+                    if(screenMode !== screen.orientation.type){
+                        if(screen.orientation.type.startsWith('landscape')){
+                            vid.setAttribute('width', vidWidth);
+                            vid.setAttribute('height', vidHeight);
+                            overlay.setAttribute('width', vidWidth);
+                            overlay.setAttribute('height', vidHeight);
+                            webglCanvas.setAttribute('width', vidWidth);
+                            webglCanvas.setAttribute('height', vidHeight);
+                            screenMode = screen.orientation.type;
+                            console.log("Changed video to landscape");
+                        }
+                        else{
+                            vid.setAttribute('width', vidHeight);
+                            vid.setAttribute('height', vidWidth);
+                            overlay.setAttribute('width', vidHeight);
+                            overlay.setAttribute('height', vidWidth);
+                            webglCanvas.setAttribute('width', vidHeight);
+                            webglCanvas.setAttribute('height', vidWidth); 
+                            screenMode = screen.orientation.type;
+                            console.log("Changed video to portrait");
+                        }
+                    }
+                }
+                
 				function enablestart() {
 //					var startbutton = document.getElementById('startbutton');
 //					startbutton.value = "start";
@@ -307,6 +407,7 @@
 				var animationRequest;
 
 				function drawGridLoop() {
+                     detectRotation();
 					// get position of face
 					positions = ctrack.getCurrentPosition(vid);
 					overlayCC.clearRect(0, 0, 500, 375);
@@ -342,7 +443,9 @@
 				}
 
 				document.addEventListener("clmtrackrIteration", function(event) {
-					stats.update();
+//					stats.update();
+//                    detectRotation();
+                   
 				}, false);
 
 			</script>
